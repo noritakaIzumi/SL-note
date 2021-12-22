@@ -4,3 +4,6 @@ resources
 # Local Netlify folder
 .netlify
 TODO
+
+# Editor configs
+.idea

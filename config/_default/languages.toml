@@ -1,3 +1,10 @@
+[ja]
+  languageName = "Japanese"
+  contentDir = "content/ja"
+  weight = 5
+  [ja.params]
+    languageISO = "JA"
+
 [en]
   languageName = "English"
   contentDir = "content/en"
