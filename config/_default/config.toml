@@ -5,13 +5,13 @@ disableHugoGeneratorInject = true
 enableEmoji = true
 enableGitInfo = false
 enableRobotsTXT = true
-languageCode = "en-US"
+languageCode = "ja-JP"
 paginate = 7
 rssLimit = 10
 
 # Multilingual
 defaultContentLanguage = "ja"
-disableLanguages = ["en", "de", "nl"]
+# disableLanguages = ["en", "de", "nl"]
 # defaultContentLanguageInSubdir = true
 
 # add redirects/headers
