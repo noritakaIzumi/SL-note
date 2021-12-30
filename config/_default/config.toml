@@ -1,4 +1,4 @@
-baseurl = "https://doks.netlify.app/"
+baseurl = "https://sl-note.fairy-select.com/"
 canonifyURLs = false
 disableAliases = true
 disableHugoGeneratorInject = true
