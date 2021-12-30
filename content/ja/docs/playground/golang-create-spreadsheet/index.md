@@ -27,151 +27,151 @@ Go 言語でスプレッドシートを作成することはできるのか？�
 package main
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
+  "context"
+  "encoding/json"
+  "fmt"
+  "golang.org/x/oauth2"
+  "golang.org/x/oauth2/google"
+  "google.golang.org/api/option"
+  "google.golang.org/api/sheets/v4"
+  "io/ioutil"
+  "log"
+  "net/http"
+  "os"
 )
 
 func main() {
-	srv := getService()
+  srv := getService()
 
-	// スプレッドシートを作成する
-	// resp, err := srv.Spreadsheets.Create(&sheets.Spreadsheet{}).Do()
-	// if err != nil {
-	// 	log.Fatalf("Unable to create a spreadsheet: %v", err)
-	// }
+  // スプレッドシートを作成する
+  // resp, err := srv.Spreadsheets.Create(&sheets.Spreadsheet{}).Do()
+  // if err != nil {
+  // 	log.Fatalf("Unable to create a spreadsheet: %v", err)
+  // }
 
-	// スプレッドシートを取得する
-	spreadsheetId := "1sBicl6K3ok_MsvM8MGWLNEYl06uN4U9IMeFE3dtsZYQ"
-	resp, err := srv.Spreadsheets.Get(spreadsheetId).Do()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-	for _, sheet := range resp.Sheets {
-		fmt.Println(sheet.Properties.Title)
-	}
+  // スプレッドシートを取得する
+  spreadsheetId := "1sBicl6K3ok_MsvM8MGWLNEYl06uN4U9IMeFE3dtsZYQ"
+  resp, err := srv.Spreadsheets.Get(spreadsheetId).Do()
+  if err != nil {
+    log.Fatalf("%v", err)
+  }
+  for _, sheet := range resp.Sheets {
+    fmt.Println(sheet.Properties.Title)
+  }
 
-	// スプレッドシートに書き込む
-	_, err = srv.Spreadsheets.Values.Update(
-		spreadsheetId,
-		"A1:B2",
-		&sheets.ValueRange{
-			Values: [][]interface{}{
-				{1, 2},
-				{3, 4},
-			},
-		}).ValueInputOption("RAW").Do()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-	// 数式を書き込むこともできる
-	_, err = srv.Spreadsheets.Values.Update(
-		spreadsheetId,
-		"A3:B3",
-		&sheets.ValueRange{
-			Values: [][]interface{}{
-				{"= SUM(A1:A2)", "= SUM(B1:B2)"},
-			},
-		}).ValueInputOption("USER_ENTERED").Do()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+  // スプレッドシートに書き込む
+  _, err = srv.Spreadsheets.Values.Update(
+    spreadsheetId,
+    "A1:B2",
+    &sheets.ValueRange{
+      Values: [][]interface{}{
+        {1, 2},
+        {3, 4},
+      },
+    }).ValueInputOption("RAW").Do()
+  if err != nil {
+    log.Fatalf("%v", err)
+  }
+  // 数式を書き込むこともできる
+  _, err = srv.Spreadsheets.Values.Update(
+    spreadsheetId,
+    "A3:B3",
+    &sheets.ValueRange{
+      Values: [][]interface{}{
+        {"= SUM(A1:A2)", "= SUM(B1:B2)"},
+      },
+    }).ValueInputOption("USER_ENTERED").Do()
+  if err != nil {
+    log.Fatalf("%v", err)
+  }
 }
 
 func getService() *sheets.Service {
-	ctx := context.Background()
-	b, err := ioutil.ReadFile("credentials.json")
-	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
-	}
+  ctx := context.Background()
+  b, err := ioutil.ReadFile("credentials.json")
+  if err != nil {
+    log.Fatalf("Unable to read client secret file: %v", err)
+  }
 
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, sheets.SpreadsheetsScope)
-	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
-	}
-	client := getClient(config)
+  // If modifying these scopes, delete your previously saved token.json.
+  config, err := google.ConfigFromJSON(b, sheets.SpreadsheetsScope)
+  if err != nil {
+    log.Fatalf("Unable to parse client secret file to config: %v", err)
+  }
+  client := getClient(config)
 
-	srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
-	if err != nil {
-		log.Fatalf("Unable to retrieve Sheets client: %v", err)
-	}
+  srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
+  if err != nil {
+    log.Fatalf("Unable to retrieve Sheets client: %v", err)
+  }
 
-	return srv
+  return srv
 }
 
 func getClient(config *oauth2.Config) *http.Client {
-	// The file token.json stores the user's access and refresh tokens, and is
-	// created automatically when the authorization flow completes for the first
-	// time.
-	tokFile := "token.json"
-	tok, err := tokenFromFile(tokFile)
-	if err != nil {
-		tok = getTokenFromWeb(config)
-		saveToken(tokFile, tok)
-	}
-	return config.Client(context.Background(), tok)
+  // The file token.json stores the user's access and refresh tokens, and is
+  // created automatically when the authorization flow completes for the first
+  // time.
+  tokFile := "token.json"
+  tok, err := tokenFromFile(tokFile)
+  if err != nil {
+    tok = getTokenFromWeb(config)
+    saveToken(tokFile, tok)
+  }
+  return config.Client(context.Background(), tok)
 }
 
 func saveToken(path string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", path)
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
-	if err != nil {
-		log.Fatalf("Unable to cache oauth token: %v", err)
-	}
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			log.Fatalf("Failed to close file: %v", path)
-		}
-	}(f)
-	err = json.NewEncoder(f).Encode(token)
-	if err != nil {
-		log.Fatalf("Failed to encode file: %v", path)
-	}
+  fmt.Printf("Saving credential file to: %s\n", path)
+  f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+  if err != nil {
+    log.Fatalf("Unable to cache oauth token: %v", err)
+  }
+  defer func(f *os.File) {
+    err := f.Close()
+    if err != nil {
+      log.Fatalf("Failed to close file: %v", path)
+    }
+  }(f)
+  err = json.NewEncoder(f).Encode(token)
+  if err != nil {
+    log.Fatalf("Failed to encode file: %v", path)
+  }
 }
 
 // Request a token from the web, then returns the retrieved token.
 func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
-	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
-		"authorization code: \n%v\n", authURL)
+  authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
+  fmt.Printf("Go to the following link in your browser then type the "+
+    "authorization code: \n%v\n", authURL)
 
-	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		log.Fatalf("Unable to read authorization code: %v", err)
-	}
+  var authCode string
+  if _, err := fmt.Scan(&authCode); err != nil {
+    log.Fatalf("Unable to read authorization code: %v", err)
+  }
 
-	tok, err := config.Exchange(context.TODO(), authCode)
-	if err != nil {
-		log.Fatalf("Unable to retrieve token from web: %v", err)
-	}
-	return tok
+  tok, err := config.Exchange(context.TODO(), authCode)
+  if err != nil {
+    log.Fatalf("Unable to retrieve token from web: %v", err)
+  }
+  return tok
 }
 
 // Retrieves a token from a local file.
 func tokenFromFile(file string) (*oauth2.Token, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			log.Fatalf("Failed to close file: %v", file)
-		}
-	}(f)
-	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
+  f, err := os.Open(file)
+  if err != nil {
+    return nil, err
+  }
+  defer func(f *os.File) {
+    err := f.Close()
+    if err != nil {
+      log.Fatalf("Failed to close file: %v", file)
+    }
+  }(f)
+  tok := &oauth2.Token{}
+  err = json.NewDecoder(f).Decode(tok)
+  return tok, err
 }
 ```
 
@@ -218,17 +218,17 @@ print('{0} cells updated.'.format(result.get('updatedCells')))
 ```go
 range_ := "A1:B2"
 values := [][]interface{}{
-	{1, 2},
-	{3, 4},
+  {1, 2},
+  {3, 4},
 }
 res, err := srv.Spreadsheets.Values.Update(
-	spreadsheetId,
-	range_,
-	&sheets.ValueRange{
-		Values: values,
-	}).ValueInputOption("RAW").Do()
+  spreadsheetId,
+  range_,
+  &sheets.ValueRange{
+    Values: values,
+  }).ValueInputOption("RAW").Do()
 if err != nil {
-	log.Fatalf("%v", err)
+  log.Fatalf("%v", err)
 }
 fmt.Printf("%v cells updated.\n", res.UpdatedCells)
 ```
