@@ -64,15 +64,20 @@ Source:
 (function(){
 
   var index = new FlexSearch.Document({
-    tokenize: "forward",
+    preset: 'score',
+    tokenize: 'full',
     cache: 100,
+    context: true,
+    optimize: true,
+    language: 'JP',
     document: {
       id: 'id',
       store: [
         "href", "title", "description"
       ],
       index: ["title", "description", "content"]
-    }
+    },
+    encode: false,
   });
 
 
