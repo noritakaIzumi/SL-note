@@ -1,16 +1,17 @@
 ---
-title: "Golang Create Spreadsheet"
-description: "Go でスプレッドシートを操作してみる"
-lead: "Go でスプレッドシートを操作してみる"
-date: 2021-12-28T23:30:49+09:00
-lastmod: 2021-12-28T23:30:49+09:00
+title: Golang Create Spreadsheet
+description: Go でスプレッドシートを操作してみる
+lead: Go でスプレッドシートを操作してみる
+date: 2021-12-28T14:30:49.000Z
+lastmod: 2021-12-28T14:30:49.000Z
 draft: false
 images: []
 menu:
   docs:
-    parent: "playground"
+    parent: playground
 weight: 999
 toc: true
+keywords: []
 ---
 
 ---
